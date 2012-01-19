@@ -1,11 +1,9 @@
 # SSMessagesViewController
 
-Simple message UI like Messages.app. I started writing this to create an in-app SMS feature for a client. Since Apple has made in-app SMS part of UI, I removed this from [SSToolkit](http://sstoolk.it).
+Simple message UI like Messages.app. I started writing this to create an in-app SMS feature for a client.
 
 ## Running the Demo
 
-You'll need to get SSToolkit first:
+Just open Xcode and build away. Enjoy.
 
-    $ git submodule update --init
-
-Then you can just open Xcode and build away. Enjoy.
+Fork by n1mda includes UITextView instead of drawing NSString, so phonenumbers/links etc can be detected.

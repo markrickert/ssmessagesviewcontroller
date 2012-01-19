@@ -13,6 +13,7 @@
 static UILineBreakMode kLineBreakMode = UILineBreakModeWordWrap;
 static CGFloat kMaxWidth = 223.0f; // TODO: Make dynamic
 static CGFloat kPaddingTop = 4.0f;
+static CGFloat kTextMarginTop = -2.0f;
 static CGFloat kPaddingBottom = 8.0f;
 static CGFloat kMarginTop = 2.0f;
 static CGFloat kMarginBottom = 2.0f;
@@ -20,6 +21,7 @@ static CGFloat kMarginBottom = 2.0f;
 @implementation SSMessageTableViewCellBubbleView
 
 @synthesize messageText = _messageText;
+@synthesize messageTextView = _messageTextView;
 @synthesize detailText = _detailText;
 @synthesize detailTextColor = _detailTextColor;
 @synthesize detailBackgroundColor = _detailBackgroundColor;
@@ -82,8 +84,8 @@ static CGFloat kMarginBottom = 2.0f;
 	
 	//Message
 	CGSize textSize = [[self class] textSizeForText:_messageText];
-	CGFloat textX = (CGFloat)bubbleImage.leftCapWidth - 3.0f + ((_messageStyle == SSMessageStyleRight) ? bubbleFrame.origin.x : 0.0f);
-	CGRect textFrame = CGRectMake(textX, kPaddingTop + kMarginTop, textSize.width, textSize.height);
+	CGFloat textX = (CGFloat)bubbleImage.leftCapWidth - 12.0f + ((_messageStyle == SSMessageStyleRight) ? bubbleFrame.origin.x : 0.0f);
+	CGRect textFrame = CGRectMake(textX, kTextMarginTop, textSize.width + 20, textSize.height + 10);
 
 	//DetailLabel
 	if(_detailText) {
@@ -113,7 +115,19 @@ static CGFloat kMarginBottom = 2.0f;
 
 	[[UIColor blackColor] set];
 	[bubbleImage drawInRect:bubbleFrame];
-	[_messageText drawInRect:textFrame withFont:kFont lineBreakMode:kLineBreakMode alignment:(_messageStyle == SSMessageStyleRight) ? UITextAlignmentRight : UITextAlignmentLeft];
+    
+    // Draw UITextView
+    _messageTextView = [[UITextView alloc] initWithFrame:textFrame];
+    [_messageTextView setFont:kFont];
+    [_messageTextView setText:_messageText];
+    [_messageTextView setEditable:NO];
+    [_messageTextView setScrollEnabled:NO];
+    [_messageTextView setBackgroundColor:[UIColor clearColor]];
+    [_messageTextView setDataDetectorTypes:UIDataDetectorTypeLink | UIDataDetectorTypePhoneNumber];
+    [_messageTextView setTextAlignment:(_messageStyle == SSMessageStyleRight) ? UITextAlignmentRight : UITextAlignmentLeft];
+    
+    [self addSubview:_messageTextView];
+    
 }
 
 @end
