@@ -18,6 +18,7 @@ typedef enum {
 @private
 	
 	SSMessageTableViewCellBubbleView *_bubbleView;
+    NSArray *links;
 }
 
 @property (nonatomic, copy) NSString *messageText;
@@ -25,6 +26,7 @@ typedef enum {
 @property (nonatomic, copy) UIColor *detailTextColor;
 @property (nonatomic, copy) UIColor *detailBackgroundColor;
 @property (nonatomic, assign) SSMessageStyle messageStyle;
+@property (nonatomic, retain) NSArray *links;
 
 - (void)setBackgroundImage:(UIImage *)backgroundImage forMessageStyle:(SSMessageStyle)messsageStyle;
 

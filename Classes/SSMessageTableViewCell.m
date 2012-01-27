@@ -10,6 +10,7 @@
 #import "SSMessageTableViewCellBubbleView.h"
 
 @implementation SSMessageTableViewCell
+@synthesize links;
 
 #pragma mark NSObject
 
