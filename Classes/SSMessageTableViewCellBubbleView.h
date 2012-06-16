@@ -8,6 +8,9 @@
 
 #import "SSMessageTableViewCell.h"
 
+
+
+
 @interface SSMessageTableViewCellBubbleView : UIView {
 
 @private
@@ -19,6 +22,8 @@
 	UIImage *_leftBackgroundImage;
 	UIImage *_rightBackgroundImage;
 	SSMessageStyle _messageStyle;
+    UIImage *_userImg;
+    UIImage *_buddyImg;
 }
 
 @property (nonatomic, copy) NSString *messageText;
@@ -27,6 +32,8 @@
 @property (nonatomic, retain) UIColor *detailBackgroundColor;
 @property (nonatomic, retain) UIImage *leftBackgroundImage;
 @property (nonatomic, retain) UIImage *rightBackgroundImage;
+@property (nonatomic, retain) UIImage *userImg;
+@property (nonatomic, retain) UIImage *buddyImg;
 @property (nonatomic, assign) SSMessageStyle messageStyle;
 
 + (CGSize)textSizeForText:(NSString *)text;

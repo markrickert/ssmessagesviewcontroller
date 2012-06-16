@@ -9,6 +9,8 @@
 #import "SSMessageTableViewCell.h"
 #import "SSMessageTableViewCellBubbleView.h"
 
+
+
 @implementation SSMessageTableViewCell
 
 #pragma mark NSObject
@@ -94,4 +96,14 @@
 		_bubbleView.rightBackgroundImage = backgroundImage;
 	}
 }
+
+
+- (void)setUserImage:(UIImage *)image{
+    _bubbleView.userImg = image;
+}
+- (void)setBuddyImage:(UIImage *)image{
+    _bubbleView.buddyImg = image;
+    
+}
+
 @end

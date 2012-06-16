@@ -8,10 +8,18 @@
 
 #import "SSMessageTableViewCellBubbleView.h"
 
+
+#define IMAGE_WIDTH     40
+#define IMAGE_HEIGHT    40
+#define IMAGE_PADDING   3
+
+
 #define kFont [UIFont systemFontOfSize:15.0]
 #define kDetailFont [UIFont systemFontOfSize:11.0]
+
+
 static UILineBreakMode kLineBreakMode = UILineBreakModeWordWrap;
-static CGFloat kMaxWidth = 223.0f; // TODO: Make dynamic
+static CGFloat kMaxWidth = 223.0f - (IMAGE_WIDTH + (2*IMAGE_PADDING)); // TODO: Make dynamic
 static CGFloat kPaddingTop = 4.0f;
 static CGFloat kPaddingBottom = 8.0f;
 static CGFloat kMarginTop = 2.0f;
@@ -26,6 +34,8 @@ static CGFloat kMarginBottom = 2.0f;
 @synthesize leftBackgroundImage = _leftBackgroundImage;
 @synthesize rightBackgroundImage = _rightBackgroundImage;
 @synthesize messageStyle = _messageStyle;
+@synthesize userImg = _userImg;
+@synthesize buddyImg = _buddyImg;
 
 #pragma mark Class Methods
 
@@ -42,12 +52,17 @@ static CGFloat kMarginBottom = 2.0f;
 
 + (CGSize)bubbleSizeForText:(NSString *)text {
 	CGSize textSize = [self textSizeForText:text];
-	return CGSizeMake(textSize.width + 35.0f, textSize.height + kPaddingTop + kPaddingBottom);
+	return CGSizeMake(textSize.width + 35.0f+IMAGE_PADDING+IMAGE_WIDTH, textSize.height + kPaddingTop + kPaddingBottom);
 }
 
 
 + (CGFloat)cellHeightForText:(NSString *)text {
-	return [self bubbleSizeForText:text].height + kMarginTop + kMarginBottom;
+    if ([self bubbleSizeForText:text].height > IMAGE_HEIGHT+IMAGE_PADDING) {
+        return [self bubbleSizeForText:text].height + kMarginTop + kMarginBottom;
+    }else{
+        return IMAGE_HEIGHT+IMAGE_PADDING + kMarginTop + kMarginBottom;
+    }
+	
 }
 
 
@@ -60,6 +75,7 @@ static CGFloat kMarginBottom = 2.0f;
 	[_detailBackgroundColor release];
 	[_leftBackgroundImage release];
 	[_rightBackgroundImage release];
+    [_userImg release];
 	[super dealloc];
 }
 
@@ -75,14 +91,31 @@ static CGFloat kMarginBottom = 2.0f;
 
 
 - (void)drawRect:(CGRect)frame {
+    
+    //user avatar image view
+    
+    CGRect imgFrame = CGRectMake(0, 0, IMAGE_WIDTH, IMAGE_HEIGHT);
+    imgFrame.origin.y = kPaddingTop;
+
+    UIImage *userPic;
+    
+    if (_messageStyle == SSMessageStyleLeft) {
+        imgFrame.origin.x = IMAGE_PADDING;
+        userPic  = self.buddyImg;
+    }else{
+        imgFrame.origin.x = self.frame.size.width - (IMAGE_PADDING+IMAGE_WIDTH);
+        userPic  = self.userImg;
+    }
+    
+    
 	//Bubble
 	UIImage *bubbleImage = _messageStyle == SSMessageStyleLeft ? _leftBackgroundImage : _rightBackgroundImage;
 	CGSize bubbleSize = [[self class] bubbleSizeForText:_messageText];
-	CGRect bubbleFrame = CGRectMake((_messageStyle == SSMessageStyleRight ? self.frame.size.width - bubbleSize.width : 0.0f), kMarginTop, bubbleSize.width, bubbleSize.height);
+	CGRect bubbleFrame = CGRectMake((_messageStyle == SSMessageStyleRight ? self.frame.size.width - bubbleSize.width : 0.0f+ imgFrame.size.width), kMarginTop, bubbleSize.width - imgFrame.size.width, bubbleSize.height);
 	
 	//Message
 	CGSize textSize = [[self class] textSizeForText:_messageText];
-	CGFloat textX = (CGFloat)bubbleImage.leftCapWidth - 3.0f + ((_messageStyle == SSMessageStyleRight) ? bubbleFrame.origin.x : 0.0f);
+	CGFloat textX = (CGFloat)bubbleImage.leftCapWidth - 3.0f + ((_messageStyle == SSMessageStyleRight) ? bubbleFrame.origin.x : 0.0f+IMAGE_WIDTH+IMAGE_PADDING);
 	CGRect textFrame = CGRectMake(textX, kPaddingTop + kMarginTop, textSize.width, textSize.height);
 
 	//DetailLabel
@@ -94,10 +127,14 @@ static CGFloat kMarginBottom = 2.0f;
 		//Background
 		int detailTextPadding = 3;
 		CGRect detailBackgroundFrame;
-		if(_messageStyle == SSMessageStyleLeft)
-			detailBackgroundFrame = CGRectMake(detailFrame.origin.x - 10, detailFrame.origin.y - detailTextPadding, detailFrame.size.width + 10 + detailTextPadding, detailFrame.size.height + (detailTextPadding * 2));
-		else
-			detailBackgroundFrame = CGRectMake(detailFrame.origin.x - detailTextPadding, detailFrame.origin.y - detailTextPadding, detailFrame.size.width + (10 * 2) + detailTextPadding, detailFrame.size.height + (detailTextPadding * 2));			
+		if(_messageStyle == SSMessageStyleLeft){
+            detailBackgroundFrame = CGRectMake(detailFrame.origin.x - 10 +IMAGE_PADDING, detailFrame.origin.y - detailTextPadding, detailFrame.size.width + 10 + detailTextPadding, detailFrame.size.height + (detailTextPadding * 2));
+            
+        }else{
+            detailBackgroundFrame = CGRectMake(detailFrame.origin.x - detailTextPadding, detailFrame.origin.y - detailTextPadding, detailFrame.size.width + (10 * 2) + detailTextPadding, detailFrame.size.height + (detailTextPadding * 2));	
+        }
+			
+					
 
 		if(_detailTextColor == nil)_detailTextColor = [UIColor blackColor];
 		if(_detailBackgroundColor == nil)_detailBackgroundColor = [UIColor whiteColor];
@@ -113,6 +150,7 @@ static CGFloat kMarginBottom = 2.0f;
 
 	[[UIColor blackColor] set];
 	[bubbleImage drawInRect:bubbleFrame];
+    [userPic drawInRect:imgFrame];
 	[_messageText drawInRect:textFrame withFont:kFont lineBreakMode:kLineBreakMode alignment:(_messageStyle == SSMessageStyleRight) ? UITextAlignmentRight : UITextAlignmentLeft];
 }
 

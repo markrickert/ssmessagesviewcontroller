@@ -24,6 +24,9 @@
 	
 	UIImage *_leftBackgroundImage;
 	UIImage *_rightBackgroundImage;
+    
+    UIImage *_userImage;
+    UIImage *_buddyImage;
 }
 
 @property (nonatomic, retain, readonly) UITableView *tableView;
@@ -32,6 +35,8 @@
 @property (nonatomic, retain, readonly) UIButton *sendButton;
 @property (nonatomic, retain) UIImage *leftBackgroundImage;
 @property (nonatomic, retain) UIImage *rightBackgroundImage;
+@property (nonatomic, retain) UIImage *userImage;
+@property (nonatomic, retain) UIImage *buddyImage;
 
 - (SSMessageStyle)messageStyleForRowAtIndexPath:(NSIndexPath *)indexPath;
 - (NSString *)textForRowAtIndexPath:(NSIndexPath *)indexPath;

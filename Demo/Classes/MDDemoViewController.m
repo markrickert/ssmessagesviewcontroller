@@ -17,6 +17,7 @@ NSString *lorem[] = {
 	@"Ya I know",
 	@"Fine then\nI see how it is",
 	@"Do you? Do you really?",
+    @"Do you? Do you really? Do you? Do you really? Do you? Do you really?",
 	@"Yes"
 };
 
@@ -25,6 +26,8 @@ NSString *lorem[] = {
 - (void)viewDidLoad {
 	[super viewDidLoad];
 	self.title = @"Messages";
+    self.userImage = [UIImage imageNamed:@"SSMessagesViewControllerSendButtonBackground"];
+    self.buddyImage = [UIImage imageNamed:@"SSMessagesViewControllerSendButtonBackground"];
 }
 
 

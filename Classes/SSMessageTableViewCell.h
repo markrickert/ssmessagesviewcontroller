@@ -28,4 +28,7 @@ typedef enum {
 
 - (void)setBackgroundImage:(UIImage *)backgroundImage forMessageStyle:(SSMessageStyle)messsageStyle;
 
+- (void)setUserImage:(UIImage *)image;
+- (void)setBuddyImage:(UIImage *)image;
+
 @end

@@ -21,12 +21,16 @@ CGFloat kInputHeight = 40.0f;
 @synthesize sendButton = _sendButton;
 @synthesize leftBackgroundImage = _leftBackgroundImage;
 @synthesize rightBackgroundImage = _rightBackgroundImage;
+@synthesize buddyImage = _buddyImage;
+@synthesize userImage = _userImage;
 
 #pragma mark NSObject
 
 - (void)dealloc {
 	self.leftBackgroundImage = nil;
 	self.rightBackgroundImage = nil;
+    self.buddyImage = nil;
+    self.userImage = nil;
 	[_tableView release];
 	[_inputBackgroundView release];
 	[_textField release];
@@ -132,6 +136,10 @@ CGFloat kInputHeight = 40.0f;
 		cell = [[[SSMessageTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier] autorelease];
 		[cell setBackgroundImage:self.leftBackgroundImage forMessageStyle:SSMessageStyleLeft];
 		[cell setBackgroundImage:self.rightBackgroundImage forMessageStyle:SSMessageStyleRight];
+        
+        [cell setUserImage:self.userImage];
+        [cell setBuddyImage:self.buddyImage];
+      
 	}
 	
   cell.messageStyle = [self messageStyleForRowAtIndexPath:indexPath];
