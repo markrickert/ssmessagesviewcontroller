@@ -13,6 +13,7 @@
 @private
 	
 	NSString *_messageText;
+    UITextView *_messageTextView;
 	NSString *_detailText;
 	UIColor *_detailTextColor;
 	UIColor *_detailBackgroundColor;
@@ -22,6 +23,7 @@
 }
 
 @property (nonatomic, copy) NSString *messageText;
+@property (nonatomic, retain) UITextView *messageTextView;
 @property (nonatomic, copy) NSString *detailText;
 @property (nonatomic, retain) UIColor *detailTextColor;
 @property (nonatomic, retain) UIColor *detailBackgroundColor;

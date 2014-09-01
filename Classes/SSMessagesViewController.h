@@ -17,18 +17,25 @@
 
 @private
 	
+    UIView *_tableHeaderView;
 	UITableView *_tableView;
+    CGPoint tableViewContentOffset;
 	UIImageView *_inputBackgroundView;
 	SSTextField *_textField;
+    UIButton *_cameraButton;
 	UIButton *_sendButton;
 	
 	UIImage *_leftBackgroundImage;
 	UIImage *_rightBackgroundImage;
+    
 }
 
+@property (nonatomic, retain) UIView *tableHeaderView;
 @property (nonatomic, retain, readonly) UITableView *tableView;
+@property (nonatomic) CGPoint tableViewContentOffset;
 @property (nonatomic, retain, readonly) UIImageView *inputBackgroundView;
 @property (nonatomic, retain, readonly) SSTextField *textField;
+@property (nonatomic, retain, readonly) UIButton *cameraButton;
 @property (nonatomic, retain, readonly) UIButton *sendButton;
 @property (nonatomic, retain) UIImage *leftBackgroundImage;
 @property (nonatomic, retain) UIImage *rightBackgroundImage;

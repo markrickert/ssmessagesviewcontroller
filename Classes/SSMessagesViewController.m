@@ -15,9 +15,12 @@ CGFloat kInputHeight = 40.0f;
 
 @implementation SSMessagesViewController
 
+@synthesize tableHeaderView = _tableHeaderView;
 @synthesize tableView = _tableView;
+@synthesize tableViewContentOffset;
 @synthesize inputBackgroundView = _inputBackgroundView;
 @synthesize textField = _textField;
+@synthesize cameraButton = _cameraButton;
 @synthesize sendButton = _sendButton;
 @synthesize leftBackgroundImage = _leftBackgroundImage;
 @synthesize rightBackgroundImage = _rightBackgroundImage;
@@ -34,7 +37,6 @@ CGFloat kInputHeight = 40.0f;
 	[super dealloc];
 }
 
-
 #pragma mark UIViewController
 
 - (void)viewDidLoad {
@@ -50,6 +52,13 @@ CGFloat kInputHeight = 40.0f;
 	_tableView.delegate = self;
 	_tableView.separatorColor = self.view.backgroundColor;
 	[self.view addSubview:_tableView];
+    
+    tableViewContentOffset = CGPointZero;
+    
+    // Table header view
+    if(_tableHeaderView) {
+        [_tableView setTableHeaderView:_tableHeaderView];
+    }
 	
 	// Input
 	_inputBackgroundView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0f, size.height - kInputHeight, size.width, kInputHeight)];
@@ -58,8 +67,14 @@ CGFloat kInputHeight = 40.0f;
 	_inputBackgroundView.userInteractionEnabled = YES;
 	[self.view addSubview:_inputBackgroundView];
 	
+    // Camera button
+    _cameraButton = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
+    _cameraButton.frame = CGRectMake(6.0f, 7.0f, 26.0f, 26.0f);
+    [_cameraButton setBackgroundImage:[UIImage imageNamed:@"SSMessagesViewControllerCameraButton.png"] forState:UIControlStateNormal];
+    [_inputBackgroundView addSubview:_cameraButton];
+    
 	// Text field
-	_textField = [[SSTextField alloc] initWithFrame:CGRectMake(6.0f, 0.0f, size.width - 75.0f, kInputHeight)];
+	_textField = [[SSTextField alloc] initWithFrame:CGRectMake(38.0f, 0.0f, size.width - 114.0f, kInputHeight)];
 	_textField.autoresizingMask = UIViewAutoresizingFlexibleWidth;
 	_textField.backgroundColor = [UIColor whiteColor];
 	_textField.background = [[UIImage imageNamed:@"SSMessagesViewControllerTextFieldBackground.png"] stretchableImageWithLeftCapWidth:12 topCapHeight:0];
@@ -67,18 +82,19 @@ CGFloat kInputHeight = 40.0f;
 	_textField.font = [UIFont systemFontOfSize:15.0f];
 	_textField.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
 	_textField.textEdgeInsets = UIEdgeInsetsMake(4.0f, 12.0f, 0.0f, 12.0f);
+    [_textField setPlaceholder:@"Meddelande"];
 	[_inputBackgroundView addSubview:_textField];
 	
 	// Send button
 	_sendButton = [[UIButton buttonWithType:UIButtonTypeCustom] retain];
-	_sendButton.frame = CGRectMake(size.width - 65.0f, 8.0f, 59.0f, 27.0f);
+	_sendButton.frame = CGRectMake(size.width - 77.0f, 8.0f, 71.0f, 27.0f);
 	_sendButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
 	_sendButton.titleLabel.font = [UIFont boldSystemFontOfSize:16.0f];
 	_sendButton.titleLabel.shadowOffset = CGSizeMake(0.0f, -1.0f);
-	[_sendButton setBackgroundImage:[[UIImage imageNamed:@"SSMessagesViewControllerSendButtonBackground.png"] stretchableImageWithLeftCapWidth:12 topCapHeight:0] forState:UIControlStateNormal];
-	[_sendButton setTitle:@"Send" forState:UIControlStateNormal];
+	[_sendButton setBackgroundImage:[[UIImage imageNamed:@"SSMessagesViewControllerSendButtonBackgroundGreen.png"] stretchableImageWithLeftCapWidth:12 topCapHeight:0] forState:UIControlStateNormal];
+	[_sendButton setTitle:@"Skicka" forState:UIControlStateNormal];
 	[_sendButton setTitleColor:[UIColor colorWithWhite:1.0f alpha:0.4f] forState:UIControlStateNormal];
-	[_sendButton setTitleShadowColor:[UIColor colorWithRed:0.325f green:0.463f blue:0.675f alpha:1.0f] forState:UIControlStateNormal];
+	[_sendButton setTitleShadowColor:[UIColor colorWithRed:0.455f green:0.671f blue:0.22f alpha:1.0f] forState:UIControlStateNormal];
 	[_inputBackgroundView addSubview:_sendButton];
 	
 	self.leftBackgroundImage = [[UIImage imageNamed:@"SSMessageTableViewCellBackgroundClear.png"] stretchableImageWithLeftCapWidth:24 topCapHeight:14];
@@ -139,6 +155,15 @@ CGFloat kInputHeight = 40.0f;
 	cell.detailText = [self detailTextForRowAtIndexPath:indexPath];
 	cell.detailTextColor = [self detailTextColorForRowAtIndexPath:indexPath];
 	cell.detailBackgroundColor = [self detailBackgroundColorForRowAtIndexPath:indexPath];
+    
+    NSDataDetector *dataDetector = [NSDataDetector dataDetectorWithTypes:NSTextCheckingTypeLink | NSTextCheckingTypePhoneNumber error:nil];
+    
+    NSArray *matches = [dataDetector matchesInString:cell.messageText options:0 range:NSMakeRange(0, [cell.messageText length])];
+    
+    [cell setLinks:matches];
+    
+    if([matches count] > 0)
+        cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
 
   return cell;
 }
@@ -156,7 +181,7 @@ CGFloat kInputHeight = 40.0f;
 - (void)textFieldDidBeginEditing:(UITextField *)textField {
 	[UIView beginAnimations:@"beginEditing" context:_inputBackgroundView];
 	[UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-	[UIView setAnimationDuration:0.3f];
+	[UIView setAnimationDuration:0.25f];
 	_tableView.contentInset = UIEdgeInsetsMake(0.0f, 0.0f, 166.0f, 0.0f);
 	_tableView.scrollIndicatorInsets = _tableView.contentInset;
 	_inputBackgroundView.frame = CGRectMake(0.0f, 160.0f, self.view.frame.size.width, kInputHeight);
@@ -168,7 +193,7 @@ CGFloat kInputHeight = 40.0f;
 - (void)textFieldDidEndEditing:(UITextField *)textField {
 	[UIView beginAnimations:@"endEditing" context:_inputBackgroundView];
 	[UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-	[UIView setAnimationDuration:0.3f];
+	[UIView setAnimationDuration:0.25f];
 	_tableView.contentInset = UIEdgeInsetsZero;
 	_tableView.scrollIndicatorInsets = UIEdgeInsetsZero;
 	_inputBackgroundView.frame = CGRectMake(0.0f, _tableView.frame.size.height, self.view.frame.size.width, kInputHeight);
